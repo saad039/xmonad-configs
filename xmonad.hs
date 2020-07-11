@@ -62,15 +62,19 @@ myModMask       = mod1Mask
 --Treeselect settings
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction myTreeConf = TS.treeselectAction myTreeConf
-   [ Node (TS.TSNode "Firefox"    "Opens firefox"      (spawn "firefox")) []
-   , Node (TS.TSNode "Opera" "Opens Opera" (spawn "opera")) []
-   , Node (TS.TSNode "VSCode" "Opens VSCode" (spawn "code")) []
-   , Node (TS.TSNode "File Manager" "Opens Nautilus" (spawn "nautilus")) []
-   , Node (TS.TSNode "System Monitor" "Opens Gnome System Monitor" (spawn "gnome-system-monitor")) []
-   , Node (TS.TSNode "Documents" "Opens Gnome Documents" (spawn "gnome-documents")) []
-   , Node (TS.TSNode "Shutdown" "Poweroff the system" (spawn "shutdown")) []
-   , Node (TS.TSNode "Reboot" "Reboot the Syste" (spawn "reboot")) []
-   , Node (TS.TSNode "Brightness" "Sets screen brightness using xbacklight" (return ()))
+   [ Node (TS.TSNode "Apps" "Applications" (return ()))
+        [ Node (TS.TSNode "Firefox"    "Opens firefox"      (spawn "firefox")) []
+        , Node (TS.TSNode "Opera" "Opens Opera" (spawn "opera")) []
+        , Node (TS.TSNode "VSCode" "Opens VSCode" (spawn "code")) []
+        , Node (TS.TSNode "File Manager" "Opens Nautilus" (spawn "nautilus")) []
+        , Node (TS.TSNode "System Monitor" "Opens Gnome System Monitor" (spawn "gnome-system-monitor")) []
+        , Node (TS.TSNode "Documents" "Opens Gnome Documents" (spawn "gnome-documents")) []
+    ]
+   ,Node (TS.TSNode "Power" "Power Options" (return ()))
+        [ Node (TS.TSNode "Shutdown" "Poweroff the system" (spawn "shutdown")) []
+        , Node (TS.TSNode "Reboot" "Reboot the Syste" (spawn "reboot")) []
+    ]
+    , Node (TS.TSNode "Brightness" "Sets screen brightness using xbacklight" (return ()))
        [ Node (TS.TSNode "Bright" "FULL POWER!!"            (spawn "xbacklight -set 100")) []
        , Node (TS.TSNode "Normal" "Normal Brightness (50%)" (spawn "xbacklight -set 50"))  []
        , Node (TS.TSNode "Dim"    "Quite dark"              (spawn "xbacklight -set 10"))  []
