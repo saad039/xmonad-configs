@@ -1,3 +1,11 @@
+--
+-- xmonad example config file.
+--
+-- A template showing all available configuration hooks,
+-- and how to override the defaults in your own xmonad.hs conf file.
+--
+-- Normally, you'd only override those defaults you care about.
+--
 
 import XMonad
 import Data.Monoid
@@ -9,6 +17,12 @@ import Graphics.X11.ExtraTypes.XF86
 import XMonad.Util.Run
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+import XMonad.Layout.ShowWName
+--For TreeSelect
+import Data.Tree
+import qualified XMonad.Actions.TreeSelect as TS
+import XMonad.Hooks.WorkspaceHistory
+import qualified XMonad.StackSet as W
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -43,8 +57,70 @@ myModMask       = mod1Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+-- myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+--------------------------------------------------------
+--Treeselect settings
+treeselectAction :: TS.TSConfig (X ()) -> X ()
+treeselectAction myTreeConf = TS.treeselectAction myTreeConf
+   [ Node (TS.TSNode "Firefox"    "Opens firefox"      (spawn "firefox")) []
+   , Node (TS.TSNode "Opera" "Opens Opera" (spawn "opera")) []
+   , Node (TS.TSNode "VSCode" "Opens VSCode" (spawn "code")) []
+   , Node (TS.TSNode "File Manager" "Opens Nautilus" (spawn "nautilus")) []
+   , Node (TS.TSNode "System Monitor" "Opens Gnome System Monitor" (spawn "gnome-system-monitor")) []
+   , Node (TS.TSNode "Documents" "Opens Gnome Documents" (spawn "gnome-documents")) []
+   , Node (TS.TSNode "Shutdown" "Poweroff the system" (spawn "shutdown")) []
+   , Node (TS.TSNode "Reboot" "Reboot the Syste" (spawn "reboot")) []
+   , Node (TS.TSNode "Brightness" "Sets screen brightness using xbacklight" (return ()))
+       [ Node (TS.TSNode "Bright" "FULL POWER!!"            (spawn "xbacklight -set 100")) []
+       , Node (TS.TSNode "Normal" "Normal Brightness (50%)" (spawn "xbacklight -set 50"))  []
+       , Node (TS.TSNode "Dim"    "Quite dark"              (spawn "xbacklight -set 10"))  []
+       ]
+   ]
 
+myWorkspaces :: Forest String
+myWorkspaces = [ Node "Home" [] -- Home Workspace
+               , Node "Browser" []      -- for everyday activity's
+               , Node "Programming" []   --  with 4 extra sub-workspaces, for even more activity's
+               , Node "4" []
+               , Node "5" []
+               , Node "6" []
+               , Node "7" []
+               , Node "8" []
+               , Node "9" []
+               ]
+
+
+myTreeNavigation = M.fromList
+    [ ((0, xK_Escape),   TS.cancel)
+    , ((0, xK_Return),   TS.select)
+    , ((0, xK_space),    TS.select)
+    , ((0, xK_Up),       TS.movePrev)
+    , ((0, xK_Down),     TS.moveNext)
+    , ((0, xK_Left),     TS.moveParent)
+    , ((0, xK_Right),    TS.moveChild)
+    , ((0, xK_k),        TS.movePrev)
+    , ((0, xK_j),        TS.moveNext)
+    , ((0, xK_h),        TS.moveParent)
+    , ((0, xK_l),        TS.moveChild)
+    , ((0, xK_o),        TS.moveHistBack)
+    , ((0, xK_i),        TS.moveHistForward)
+    ]
+
+
+tsDefaultConfig = TS.TSConfig { TS.ts_hidechildren = True
+                           , TS.ts_background   = 0xdd292d3e
+                           , TS.ts_font         = "xft:Sans-10"
+                           , TS.ts_node         = (0xffd0d0d0, 0xff202331)
+                           , TS.ts_nodealt      = (0xffd0d0d0, 0xff292d3e)
+                           , TS.ts_highlight    = (0xffffffff, 0xff755999)
+                           , TS.ts_extra        = 0xffd0d0d0
+                           , TS.ts_node_width   = 200
+                           , TS.ts_node_height  = 30
+                           , TS.ts_originX      = 0
+                           , TS.ts_originY      = 0
+                           , TS.ts_indent       = 80
+                           , TS.ts_navigate     = myTreeNavigation
+                           }
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
@@ -64,10 +140,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume @DEFAULT_SINK@ +10%")
 
    --take a screenshot of entire display
-   , ((modm , xK_Print ), spawn "scrot ~/Pictures/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
+   , ((modm , xK_Print ), spawn "scrot /home/saad/Pictures/screen_%Y-%m-%d-%H-%M-%S.png -d 1")
 
    --take a screenshot of focused window
-   , ((modm .|. controlMask, xK_Print ), spawn "scrot ~/Pictures/window_%Y-%m-%d-%H-%M-%S.png -d 1-u") 
+   , ((modm .|. controlMask, xK_Print ), spawn "scrot /home/saad/Pictures/window_%Y-%m-%d-%H-%M-%S.png -d 1-u") 
+
+    --treeselect
+    , ((modm, xK_z), TS.treeselectWorkspace tsDefaultConfig myWorkspaces W.greedyView)
+
+    --treeselect actions
+    , ((modm, xK_x), treeselectAction tsDefaultConfig)
 
     -- launch firefox
     , ((modm .|. controlMask, xK_f ), spawn "firefox")
@@ -131,7 +213,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Deincrement the number of windows in the master area
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
-    
     -- Toggle the status bar gap
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
     -- See also the statusBar function from Hooks.DynamicLog.
@@ -296,7 +377,7 @@ defaults = def {
         clickJustFocuses   = myClickJustFocuses,
         borderWidth        = myBorderWidth,
         modMask            = myModMask,
-        workspaces         = myWorkspaces,
+        workspaces         = TS.toWorkspaces myWorkspaces,
         normalBorderColor  = myNormalBorderColor,
         focusedBorderColor = myFocusedBorderColor,
 
