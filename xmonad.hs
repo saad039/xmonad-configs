@@ -1,11 +1,3 @@
---
--- xmonad example config file.
---
--- A template showing all available configuration hooks,
--- and how to override the defaults in your own xmonad.hs conf file.
---
--- Normally, you'd only override those defaults you care about.
---
 
 import XMonad
 import Data.Monoid
@@ -70,6 +62,7 @@ treeselectAction myTreeConf = TS.treeselectAction myTreeConf
         , Node (TS.TSNode "System Monitor" "Opens Gnome System Monitor" (spawn "gnome-system-monitor")) []
         , Node (TS.TSNode "Documents" "Opens Gnome Documents" (spawn "gnome-documents")) []
     ]
+   ,Node (TS.TSNode "ScreenShot"    "Take ScreenShot"      (spawn "scrot /home/saad/Pictures/screen_%Y-%m-%d-%H-%M-%S.png -d 1")) []
    ,Node (TS.TSNode "Power" "Power Options" (return ()))
         [ Node (TS.TSNode "Shutdown" "Poweroff the system" (spawn "shutdown")) []
         , Node (TS.TSNode "Reboot" "Reboot the Syste" (spawn "reboot")) []
@@ -128,7 +121,7 @@ tsDefaultConfig = TS.TSConfig { TS.ts_hidechildren = True
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#ff0000"
+myFocusedBorderColor = "#8b2bd4"
 myTextEditor         = "code"
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -352,7 +345,7 @@ myStartupHook = do
 myBar = "xmobar"
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+myPP = xmobarPP { ppCurrent = xmobarColor "#8e5da2" "" . wrap "<" ">" }
 
 -- Key binding to toggle the gap for the bar.
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
