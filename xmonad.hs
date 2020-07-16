@@ -58,7 +58,7 @@ treeselectAction myTreeConf = TS.treeselectAction myTreeConf
         [ Node (TS.TSNode "Firefox"    "Opens firefox"      (spawn "firefox")) []
         , Node (TS.TSNode "Opera" "Opens Opera" (spawn "opera")) []
         , Node (TS.TSNode "VSCode" "Opens VSCode" (spawn "code")) []
-        , Node (TS.TSNode "File Manager" "Opens Nautilus" (spawn "nautilus")) []
+        , Node (TS.TSNode "File Manager" "Opens pcmanfm" (spawn "pcmanfm")) []
         , Node (TS.TSNode "System Monitor" "Opens Gnome System Monitor" (spawn "gnome-system-monitor")) []
         , Node (TS.TSNode "Documents" "Opens Gnome Documents" (spawn "gnome-documents")) []
     ]
@@ -121,7 +121,8 @@ tsDefaultConfig = TS.TSConfig { TS.ts_hidechildren = True
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#8b2bd4"
+-- myFocusedBorderColor = "#8b2bd4"
+myFocusedBorderColor = "#073642"
 myTextEditor         = "code"
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -151,8 +152,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch firefox
     , ((modm .|. controlMask, xK_f ), spawn "firefox")
 
-    -- launch nautilus
-    , ((modm .|. controlMask, xK_n ), spawn "nautilus")
+    -- launch pcmanfm
+    , ((modm .|. controlMask, xK_n ), spawn "pcmanfm")
 
     -- launch text editor
     , ((modm .|. controlMask, xK_c ), spawn myTextEditor)
@@ -307,7 +308,10 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    , resource  =? "kdesktop"       --> doIgnore 
+    , title =? "Oracle VM VirtualBox Manager"     --> doFloat
+    , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat  -- Float Firefox Dialog
+    ]
 
 ------------------------------------------------------------------------
 -- Event handling

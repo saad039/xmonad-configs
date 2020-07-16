@@ -1,7 +1,7 @@
 Config { 
 
    -- appearance
-     font =         "xft: JetBrainsMono-Regular.ttf: JetBrains Mono:style=Regular:size=9, Bitstream Vera Sans Mono:size=9:bold:antialias=true"
+     font =         "xft: JetBrainsMono.ttf: JetBrains Mono:style=Regular:size=10, Bitstream Vera Sans Mono:size=9:bold:antialias=true"
    , bgColor =      "black"
    , fgColor =      "#646464"
    , position =     Top
@@ -40,8 +40,8 @@ Config {
         -- weather monitor
         [ Run Weather "OPMT" [ "--template", "<skyCondition> | <fc=#4682B4><tempC></fc>°C | <fc=#4682B4><rh></fc>% | <fc=#4682B4><pressure></fc>hPa"
                              ] 36000
-	-- StdinReader
-	, Run StdinReader
+	      -- StdinReader
+      	, Run StdinReader    
         -- network activity monitor (dynamic interface resolution)
         , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
                              , "--Low"      , "1000"       -- units: B/s
